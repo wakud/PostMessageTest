@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Message>
+
+<h1>All Messages</h1>
+
+@foreach (var message in Model)
+{
+    <p>
+        @message.Text
+        <small>@message.TimeOfCreation</small>
+    </p>
+}
