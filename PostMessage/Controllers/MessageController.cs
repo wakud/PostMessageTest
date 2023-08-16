@@ -2,6 +2,7 @@
 using PostMessage.BLL;
 using PostMessage.Models;
 using Microsoft.AspNetCore.Http;
+using NuGet.Protocol;
 
 namespace PostMessage.Controllers
 {
@@ -15,19 +16,20 @@ namespace PostMessage.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             string userId = Request.Cookies["userId"];  //Отримуємо айді з куків
 
-            //Якщо немає, то генеруємо
+            //Якщо немає, то генеруємо і записуємо в куки
             if (String.IsNullOrEmpty(userId))
             {
                 userId = Guid.NewGuid().ToString();
                 Response.Cookies.Append("userId", userId);
             }
-
             ViewData ["userId"] = userId;
-            return View();
+            var a = await _postMessage.Get10UserMessageAsync(Guid.Parse(userId));
+
+            return View(a);
         }
         
         [HttpPost]
@@ -41,7 +43,16 @@ namespace PostMessage.Controllers
                     return RedirectToAction("Index");
                 }
 
-                await _postMessage.PostUserMessageAsync(message, Guid.Parse(userId));
+                var rezult = await _postMessage.PostUserMessageAsync(message, Guid.Parse(userId));
+
+                if (rezult == true)
+                {
+                    TempData[WC.Success] = WC.Success;
+                }
+                else
+                {
+                    TempData[WC.Error] = WC.Error;
+                }
             }
             catch (Exception e)
             {

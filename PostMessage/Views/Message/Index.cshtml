@@ -10,26 +10,17 @@
 </form>
 
 <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-    <button type="button" class="btn btn-outline-warning">Показати повідомлення користувача</button>
+    <button type="button" class="btn btn-outline-warning" onclick="showTable()">Показати повідомлення користувача</button>
     <button type="button" class="btn btn-outline-success">Показати повідомлення всіх користувачів</button>
 </div>
 
 <div class="table">
-    <thead>
-    <tr>
-        <th>Айді користувача</th>
-        <th>Текст повідомлення</th>
-        <th>Дата створення</th>
-    </tr>
-    </thead>
-    <tbody>
-    @* @foreach (var message in Model)
-    {
-        <tr>
-            <td>@message.UserId</td>
-            <td>@message.Text</td>
-            <td>@message.TimeOfCreation</td>
-        </tr>
-    } *@
-    </tbody>
+     @foreach (var message in Model)
+     {
+        <partial name="_TenUserMessages" model="message"/>
+     }
 </div>
+
+<script>
+
+</script>

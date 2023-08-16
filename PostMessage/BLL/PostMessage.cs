@@ -15,11 +15,46 @@ namespace PostMessage.BLL
         }
 
         /// <summary>
+        /// Вибір 10 повідомлень користувача
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Message>> Get10UserMessageAsync(Guid userId)
+        {
+            var filePath = _appEnv.WebRootPath + WC.FilePath + WC.FileName;
+            IEnumerable<Message> tenUserMessages = new List<Message>();
+
+            if (!File.Exists(filePath))
+            {
+                CreateNewJsonFile(filePath);
+                return tenUserMessages;
+            }
+
+            var messages = await ReadJsonFileAsync(filePath);
+            tenUserMessages = messages.Where(x => x.UserId == userId).Take(10);
+
+            return tenUserMessages;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Message>> Get20LatestUsersMessagesAsync()
+        {
+            var filePath = _appEnv.WebRootPath + WC.FilePath + WC.FileName;
+            var messages = await ReadJsonFileAsync(filePath);
+
+            var latest20Messages = messages.Take(20);
+            return latest20Messages;
+        }
+
+        /// <summary>
         /// Збереження повідомлення в json
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        public async Task PostUserMessageAsync(string message, Guid userId)
+        public async Task<bool> PostUserMessageAsync(string message, Guid userId)
         {
             var filePath = _appEnv.WebRootPath + WC.FilePath + WC.FileName;
             var messages = new List<Message>();
@@ -35,6 +70,8 @@ namespace PostMessage.BLL
                 };
                 messages.Add(newMessage);
                 await WriteJsonFileAsync(filePath, messages);
+                
+                return true;
             }
             else
             {
@@ -52,9 +89,10 @@ namespace PostMessage.BLL
                     
                     messages.Add(newMessage);
                     await WriteJsonFileAsync(filePath, messages);
+                    return true;
                 }
-
             }
+            return false;
         }
 
         /// <summary>
@@ -83,9 +121,11 @@ namespace PostMessage.BLL
 
             using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
             {
-                var json = await JsonSerializer.DeserializeAsync<List<Message>>(fs);
-
-                messages = json ?? new List<Message>();
+                if (fs.Length > 0)
+                {
+                    var json = await JsonSerializer.DeserializeAsync<List<Message>>(fs);
+                    messages = json ?? new List<Message>();
+                }
             }
 
             return messages;

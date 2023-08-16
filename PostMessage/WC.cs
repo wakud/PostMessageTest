@@ -10,5 +10,7 @@ namespace PostMessage
     {
         public const string FileName = "messages.json";
         public const string FilePath = "\\Files\\";
+        public const string Success = "Повідомлення надіслано";
+        public const string Error = "Помилка, повідомлення не надіслано. Максимально користувач може відправити 10 повідомлень.";
     }
 }
