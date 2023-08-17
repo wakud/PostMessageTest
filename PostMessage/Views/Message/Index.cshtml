@@ -1,4 +1,5 @@
-﻿
+﻿@model Message
+
 <form asp-action="PostMessage" method="post">
     <div class="mb-3">
         <input name="userId" value="@ViewData["userId"]" hidden />
@@ -12,4 +13,6 @@
     <button data-url="@Url.Action("Get10UserMessages")" data-user="@ViewData["userId"]" class="btn btn-outline-warning" id="show10UseMessages">Показати повідомлення користувача</button>
     <button data-url="@Url.Action("Get20UsersMessages")" type="button" class="btn btn-outline-success" id="show20UsersMessages">Показати повідомлення всіх користувачів</button>
 </div>
+
 <div id="result"></div>
+

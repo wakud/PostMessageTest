@@ -47,7 +47,7 @@ namespace PostMessage.BLL
             var messages = await ReadJsonFileAsync(filePath);
             if (fetchParams.userId != null)
             {
-                return messages.Where(x => x.UserId == fetchParams.userId).Take(fetchParams.limit);
+                return messages.Where(x => x.UserId == fetchParams.userId).OrderBy(x => x.UserId).Take(fetchParams.limit);
             }
 
             return messages.Take(fetchParams.limit);

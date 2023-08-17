@@ -1,20 +1,19 @@
-﻿
-$(document).ready(() => {
+﻿$(document).ready(() => {
     function showTable() {
         const url = $(this).data('url');
         const userId = $(this).data('user');
         let data = {};
         if (userId) data.userId = userId;
-        console.log(url);
+        /*console.log(url);*/
         $.ajax({
             url: url,
             data: data,
             method: 'POST',
             dataType: "json",
             success: function (result) {
-                console.log(result);
+                /*console.log(result);*/
                 $('#result').html(`
-                   <table class="table table-stripped">
+                   <table id="myTable" class="table table-stripped">
                         <thead>
                             <tr>
                                 <th>Айді</th>
@@ -44,4 +43,5 @@ $(document).ready(() => {
     $('#show10UseMessages').click(showTable);
     $('#show20UsersMessages').click(showTable);
 
+    
 });
