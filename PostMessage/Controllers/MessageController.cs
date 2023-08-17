@@ -3,6 +3,7 @@ using PostMessage.BLL;
 using PostMessage.Models;
 using Microsoft.AspNetCore.Http;
 using NuGet.Protocol;
+using System.Collections.Generic;
 
 namespace PostMessage.Controllers
 {
@@ -26,10 +27,9 @@ namespace PostMessage.Controllers
                 userId = Guid.NewGuid().ToString();
                 Response.Cookies.Append("userId", userId);
             }
-            ViewData ["userId"] = userId;
-            var a = await _postMessage.Get10UserMessageAsync(Guid.Parse(userId));
+            ViewData["userId"] = userId;
 
-            return View(a);
+            return View();
         }
         
         [HttpPost]
@@ -63,5 +63,19 @@ namespace PostMessage.Controllers
             return RedirectToAction("Index");
         }
 
+        public async Task<JsonResult> Get10UserMessages(string userId)
+        {
+            FetchMessageParams fetchParams = new FetchMessageParams(Guid.Parse(userId), 10);
+            var result = await _postMessage.GetMessages(fetchParams);
+            return Json(result);
+        }
+
+
+        public async Task<IActionResult> Get20UsersMessages()
+        {
+            FetchMessageParams fetchParams = new FetchMessageParams(20);
+            var result = await _postMessage.GetMessages(fetchParams);
+            return Json(result);
+        }
     }
 }

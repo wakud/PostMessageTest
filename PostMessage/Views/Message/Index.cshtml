@@ -1,5 +1,4 @@
-﻿@model IEnumerable<Message>
-
+﻿
 <form asp-action="PostMessage" method="post">
     <div class="mb-3">
         <input name="userId" value="@ViewData["userId"]" hidden />
@@ -10,17 +9,7 @@
 </form>
 
 <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-    <button type="button" class="btn btn-outline-warning" onclick="showTable()">Показати повідомлення користувача</button>
-    <button type="button" class="btn btn-outline-success">Показати повідомлення всіх користувачів</button>
+    <button data-url="@Url.Action("Get10UserMessages")" data-user="@ViewData["userId"]" class="btn btn-outline-warning" id="show10UseMessages">Показати повідомлення користувача</button>
+    <button data-url="@Url.Action("Get20UsersMessages")" type="button" class="btn btn-outline-success" id="show20UsersMessages">Показати повідомлення всіх користувачів</button>
 </div>
-
-<div class="table">
-     @foreach (var message in Model)
-     {
-        <partial name="_TenUserMessages" model="message"/>
-     }
-</div>
-
-<script>
-
-</script>
+<div id="result"></div>

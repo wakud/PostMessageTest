@@ -2,9 +2,28 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 
 namespace PostMessage.BLL
 {
+
+    public class FetchMessageParams
+    {
+        public Guid? userId { get; set; }
+        public int limit { get; set; }
+
+        public FetchMessageParams(Guid userId, int limit)
+        {
+            this.userId = userId;
+            this.limit = limit;
+        }
+
+        public FetchMessageParams(int limit)
+        {
+            this.limit = limit;
+        }
+    }
+
     public class PostMessage : IPostMessage
     {
         private readonly IWebHostEnvironment _appEnv;
@@ -14,12 +33,7 @@ namespace PostMessage.BLL
             _appEnv = appEnvironment;
         }
 
-        /// <summary>
-        /// Вибір 10 повідомлень користувача
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<IEnumerable<Message>> Get10UserMessageAsync(Guid userId)
+        public async Task<IEnumerable<Message>> GetMessages(FetchMessageParams fetchParams)
         {
             var filePath = _appEnv.WebRootPath + WC.FilePath + WC.FileName;
             IEnumerable<Message> tenUserMessages = new List<Message>();
@@ -31,22 +45,12 @@ namespace PostMessage.BLL
             }
 
             var messages = await ReadJsonFileAsync(filePath);
-            tenUserMessages = messages.Where(x => x.UserId == userId).Take(10);
+            if (fetchParams.userId != null)
+            {
+                return messages.Where(x => x.UserId == fetchParams.userId).Take(fetchParams.limit);
+            }
 
-            return tenUserMessages;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<Message>> Get20LatestUsersMessagesAsync()
-        {
-            var filePath = _appEnv.WebRootPath + WC.FilePath + WC.FileName;
-            var messages = await ReadJsonFileAsync(filePath);
-
-            var latest20Messages = messages.Take(20);
-            return latest20Messages;
+            return messages.Take(fetchParams.limit);
         }
 
         /// <summary>

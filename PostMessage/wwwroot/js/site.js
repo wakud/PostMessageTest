@@ -1,23 +1,47 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-
-$(function () {
-    $("#messageForm").submit(function (e) {
-        e.preventDefault();
-        
-        var message = $("#message").val();
-
-        // Відправка повідомлення на сервер
+﻿
+$(document).ready(() => {
+    function showTable() {
+        const url = $(this).data('url');
+        const userId = $(this).data('user');
+        let data = {};
+        if (userId) data.userId = userId;
+        console.log(url);
         $.ajax({
-            url: "/messages",
-            type: "post",
-            data: { message: message },
+            url: url,
+            data: data,
+            method: 'POST',
+            dataType: "json",
             success: function (result) {
-                // Refresh the messages list
-                $("#messages").load("/messages");
+                console.log(result);
+                $('#result').html(`
+                   <table class="table table-stripped">
+                        <thead>
+                            <tr>
+                                <th>Айді</th>
+                                <th>Повідомлення</th>
+                                <th>Дата</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${result.map(row => `
+                                <tr>
+                                    <td>${row.userId}</td>
+                                    <td>${row.text}</td>
+                                    <td>${row.timeOfCreation}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `);
+
+            },
+            error: function (error) {
+                console.error('error');
             }
         });
-    });
+    }
+
+    $('#show10UseMessages').click(showTable);
+    $('#show20UsersMessages').click(showTable);
+
 });
